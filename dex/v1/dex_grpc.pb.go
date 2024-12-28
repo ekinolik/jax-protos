@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DexService_GetDex_FullMethodName = "/dex.v1.DexService/GetDex"
+	DexService_GetDex_FullMethodName          = "/dex.v1.DexService/GetDex"
+	DexService_GetDexByStrikes_FullMethodName = "/dex.v1.DexService/GetDexByStrikes"
 )
 
 // DexServiceClient is the client API for DexService service.
@@ -30,6 +31,8 @@ const (
 type DexServiceClient interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(ctx context.Context, in *GetDexRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
+	// GetDexByStrikes returns the delta exposure calculations for a specified number of strikes around the spot price
+	GetDexByStrikes(ctx context.Context, in *GetDexByStrikesRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
 }
 
 type dexServiceClient struct {
@@ -50,6 +53,16 @@ func (c *dexServiceClient) GetDex(ctx context.Context, in *GetDexRequest, opts .
 	return out, nil
 }
 
+func (c *dexServiceClient) GetDexByStrikes(ctx context.Context, in *GetDexByStrikesRequest, opts ...grpc.CallOption) (*GetDexResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDexResponse)
+	err := c.cc.Invoke(ctx, DexService_GetDexByStrikes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DexServiceServer is the server API for DexService service.
 // All implementations must embed UnimplementedDexServiceServer
 // for forward compatibility.
@@ -58,6 +71,8 @@ func (c *dexServiceClient) GetDex(ctx context.Context, in *GetDexRequest, opts .
 type DexServiceServer interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(context.Context, *GetDexRequest) (*GetDexResponse, error)
+	// GetDexByStrikes returns the delta exposure calculations for a specified number of strikes around the spot price
+	GetDexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error)
 	mustEmbedUnimplementedDexServiceServer()
 }
 
@@ -70,6 +85,9 @@ type UnimplementedDexServiceServer struct{}
 
 func (UnimplementedDexServiceServer) GetDex(context.Context, *GetDexRequest) (*GetDexResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDex not implemented")
+}
+func (UnimplementedDexServiceServer) GetDexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDexByStrikes not implemented")
 }
 func (UnimplementedDexServiceServer) mustEmbedUnimplementedDexServiceServer() {}
 func (UnimplementedDexServiceServer) testEmbeddedByValue()                    {}
@@ -110,6 +128,24 @@ func _DexService_GetDex_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DexService_GetDexByStrikes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDexByStrikesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DexServiceServer).GetDexByStrikes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DexService_GetDexByStrikes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DexServiceServer).GetDexByStrikes(ctx, req.(*GetDexByStrikesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DexService_ServiceDesc is the grpc.ServiceDesc for DexService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -120,6 +156,10 @@ var DexService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDex",
 			Handler:    _DexService_GetDex_Handler,
+		},
+		{
+			MethodName: "GetDexByStrikes",
+			Handler:    _DexService_GetDexByStrikes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
