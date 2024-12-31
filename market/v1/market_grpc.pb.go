@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MarketService_GetLastTrade_FullMethodName = "/market.v1.MarketService/GetLastTrade"
+	MarketService_GetLastTrade_FullMethodName = "/jax.v1.MarketService/GetLastTrade"
 )
 
 // MarketServiceClient is the client API for MarketService service.
@@ -108,7 +108,7 @@ func _MarketService_GetLastTrade_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MarketService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "market.v1.MarketService",
+	ServiceName: "jax.v1.MarketService",
 	HandlerType: (*MarketServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

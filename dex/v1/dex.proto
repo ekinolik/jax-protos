@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package dex.v1;
+package jax.v1;
 
 option go_package = "github.com/ekinolik/jax/api/proto/dex/v1;dexv1";
 
-// DexService provides endpoints for delta exposure calculations
-service DexService {
+// OptionService provides endpoints for delta exposure calculations
+service OptionService {
   // GetDex returns the delta exposure calculations for given parameters
   rpc GetDex(GetDexRequest) returns (GetDexResponse) {}
   
