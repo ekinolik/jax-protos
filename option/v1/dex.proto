@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package jax.v1;
 
-option go_package = "github.com/ekinolik/jax/api/proto/dex/v1;dexv1";
+option go_package = "github.com/ekinolik/jax/api/proto/option/v1;optionv1";
 
 // OptionService provides endpoints for delta exposure calculations
 service OptionService {

@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.2
-// source: api/proto/dex/v1/dex.proto
+// source: api/proto/option/v1/dex.proto
 
-package dexv1
+package optionv1
 
 import (
 	context "context"
@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// DexService provides endpoints for delta exposure calculations
+// OptionService provides endpoints for delta exposure calculations
 type OptionServiceClient interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(ctx context.Context, in *GetDexRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
@@ -67,7 +67,7 @@ func (c *optionServiceClient) GetDexByStrikes(ctx context.Context, in *GetDexByS
 // All implementations must embed UnimplementedOptionServiceServer
 // for forward compatibility.
 //
-// DexService provides endpoints for delta exposure calculations
+// OptionService provides endpoints for delta exposure calculations
 type OptionServiceServer interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(context.Context, *GetDexRequest) (*GetDexResponse, error)
@@ -163,5 +163,5 @@ var OptionService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/proto/dex/v1/dex.proto",
+	Metadata: "api/proto/option/v1/dex.proto",
 }
