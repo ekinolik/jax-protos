@@ -4,13 +4,19 @@ package jax.v1;
 
 option go_package = "github.com/ekinolik/jax/api/proto/option/v1;optionv1";
 
-// OptionService provides endpoints for delta exposure calculations
+// OptionService provides endpoints for delta and gamma exposure calculations
 service OptionService {
   // GetDex returns the delta exposure calculations for given parameters
   rpc GetDex(GetDexRequest) returns (GetDexResponse) {}
   
   // GetDexByStrikes returns the delta exposure calculations for a specified number of strikes around the spot price
   rpc GetDexByStrikes(GetDexByStrikesRequest) returns (GetDexResponse) {}
+
+  // GetGex returns the gamma exposure calculations for given parameters
+  rpc GetGex(GetDexRequest) returns (GetDexResponse) {}
+  
+  // GetGexByStrikes returns the gamma exposure calculations for a specified number of strikes around the spot price
+  rpc GetGexByStrikes(GetDexByStrikesRequest) returns (GetDexResponse) {}
 }
 
 // GetDexRequest represents the request parameters

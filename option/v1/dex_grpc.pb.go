@@ -21,18 +21,24 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	OptionService_GetDex_FullMethodName          = "/jax.v1.OptionService/GetDex"
 	OptionService_GetDexByStrikes_FullMethodName = "/jax.v1.OptionService/GetDexByStrikes"
+	OptionService_GetGex_FullMethodName          = "/jax.v1.OptionService/GetGex"
+	OptionService_GetGexByStrikes_FullMethodName = "/jax.v1.OptionService/GetGexByStrikes"
 )
 
 // OptionServiceClient is the client API for OptionService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// OptionService provides endpoints for delta exposure calculations
+// OptionService provides endpoints for delta and gamma exposure calculations
 type OptionServiceClient interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(ctx context.Context, in *GetDexRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
 	// GetDexByStrikes returns the delta exposure calculations for a specified number of strikes around the spot price
 	GetDexByStrikes(ctx context.Context, in *GetDexByStrikesRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
+	// GetGex returns the gamma exposure calculations for given parameters
+	GetGex(ctx context.Context, in *GetDexRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
+	// GetGexByStrikes returns the gamma exposure calculations for a specified number of strikes around the spot price
+	GetGexByStrikes(ctx context.Context, in *GetDexByStrikesRequest, opts ...grpc.CallOption) (*GetDexResponse, error)
 }
 
 type optionServiceClient struct {
@@ -63,16 +69,40 @@ func (c *optionServiceClient) GetDexByStrikes(ctx context.Context, in *GetDexByS
 	return out, nil
 }
 
+func (c *optionServiceClient) GetGex(ctx context.Context, in *GetDexRequest, opts ...grpc.CallOption) (*GetDexResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDexResponse)
+	err := c.cc.Invoke(ctx, OptionService_GetGex_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *optionServiceClient) GetGexByStrikes(ctx context.Context, in *GetDexByStrikesRequest, opts ...grpc.CallOption) (*GetDexResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDexResponse)
+	err := c.cc.Invoke(ctx, OptionService_GetGexByStrikes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OptionServiceServer is the server API for OptionService service.
 // All implementations must embed UnimplementedOptionServiceServer
 // for forward compatibility.
 //
-// OptionService provides endpoints for delta exposure calculations
+// OptionService provides endpoints for delta and gamma exposure calculations
 type OptionServiceServer interface {
 	// GetDex returns the delta exposure calculations for given parameters
 	GetDex(context.Context, *GetDexRequest) (*GetDexResponse, error)
 	// GetDexByStrikes returns the delta exposure calculations for a specified number of strikes around the spot price
 	GetDexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error)
+	// GetGex returns the gamma exposure calculations for given parameters
+	GetGex(context.Context, *GetDexRequest) (*GetDexResponse, error)
+	// GetGexByStrikes returns the gamma exposure calculations for a specified number of strikes around the spot price
+	GetGexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error)
 	mustEmbedUnimplementedOptionServiceServer()
 }
 
@@ -88,6 +118,12 @@ func (UnimplementedOptionServiceServer) GetDex(context.Context, *GetDexRequest) 
 }
 func (UnimplementedOptionServiceServer) GetDexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDexByStrikes not implemented")
+}
+func (UnimplementedOptionServiceServer) GetGex(context.Context, *GetDexRequest) (*GetDexResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGex not implemented")
+}
+func (UnimplementedOptionServiceServer) GetGexByStrikes(context.Context, *GetDexByStrikesRequest) (*GetDexResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGexByStrikes not implemented")
 }
 func (UnimplementedOptionServiceServer) mustEmbedUnimplementedOptionServiceServer() {}
 func (UnimplementedOptionServiceServer) testEmbeddedByValue()                       {}
@@ -146,6 +182,42 @@ func _OptionService_GetDexByStrikes_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OptionService_GetGex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDexRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OptionServiceServer).GetGex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OptionService_GetGex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OptionServiceServer).GetGex(ctx, req.(*GetDexRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OptionService_GetGexByStrikes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDexByStrikesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OptionServiceServer).GetGexByStrikes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OptionService_GetGexByStrikes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OptionServiceServer).GetGexByStrikes(ctx, req.(*GetDexByStrikesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OptionService_ServiceDesc is the grpc.ServiceDesc for OptionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -160,6 +232,14 @@ var OptionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDexByStrikes",
 			Handler:    _OptionService_GetDexByStrikes_Handler,
+		},
+		{
+			MethodName: "GetGex",
+			Handler:    _OptionService_GetGex_Handler,
+		},
+		{
+			MethodName: "GetGexByStrikes",
+			Handler:    _OptionService_GetGexByStrikes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
