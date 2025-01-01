@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.2
-// source: api/proto/option/v1/dex.proto
+// source: api/proto/option/v1/option.proto
 
 package optionv1
 
@@ -243,5 +243,5 @@ var OptionService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/proto/option/v1/dex.proto",
+	Metadata: "api/proto/option/v1/option.proto",
 }
