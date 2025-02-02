@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MarketService_GetLastTrade_FullMethodName = "/jax.v1.MarketService/GetLastTrade"
+	MarketService_GetLastTrade_FullMethodName  = "/jax.v1.MarketService/GetLastTrade"
+	MarketService_GetAggregates_FullMethodName = "/jax.v1.MarketService/GetAggregates"
 )
 
 // MarketServiceClient is the client API for MarketService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MarketServiceClient interface {
 	GetLastTrade(ctx context.Context, in *GetLastTradeRequest, opts ...grpc.CallOption) (*GetLastTradeResponse, error)
+	GetAggregates(ctx context.Context, in *GetAggregatesRequest, opts ...grpc.CallOption) (*GetAggregatesResponse, error)
 }
 
 type marketServiceClient struct {
@@ -47,11 +49,22 @@ func (c *marketServiceClient) GetLastTrade(ctx context.Context, in *GetLastTrade
 	return out, nil
 }
 
+func (c *marketServiceClient) GetAggregates(ctx context.Context, in *GetAggregatesRequest, opts ...grpc.CallOption) (*GetAggregatesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAggregatesResponse)
+	err := c.cc.Invoke(ctx, MarketService_GetAggregates_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketServiceServer is the server API for MarketService service.
 // All implementations must embed UnimplementedMarketServiceServer
 // for forward compatibility.
 type MarketServiceServer interface {
 	GetLastTrade(context.Context, *GetLastTradeRequest) (*GetLastTradeResponse, error)
+	GetAggregates(context.Context, *GetAggregatesRequest) (*GetAggregatesResponse, error)
 	mustEmbedUnimplementedMarketServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedMarketServiceServer struct{}
 
 func (UnimplementedMarketServiceServer) GetLastTrade(context.Context, *GetLastTradeRequest) (*GetLastTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLastTrade not implemented")
+}
+func (UnimplementedMarketServiceServer) GetAggregates(context.Context, *GetAggregatesRequest) (*GetAggregatesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAggregates not implemented")
 }
 func (UnimplementedMarketServiceServer) mustEmbedUnimplementedMarketServiceServer() {}
 func (UnimplementedMarketServiceServer) testEmbeddedByValue()                       {}
@@ -104,6 +120,24 @@ func _MarketService_GetLastTrade_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MarketService_GetAggregates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAggregatesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketServiceServer).GetAggregates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MarketService_GetAggregates_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketServiceServer).GetAggregates(ctx, req.(*GetAggregatesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MarketService_ServiceDesc is the grpc.ServiceDesc for MarketService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var MarketService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLastTrade",
 			Handler:    _MarketService_GetLastTrade_Handler,
+		},
+		{
+			MethodName: "GetAggregates",
+			Handler:    _MarketService_GetAggregates_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -6,6 +6,7 @@ option go_package = "github.com/ekinolik/jax/api/proto/market/v1;marketv1";
 
 service MarketService {
   rpc GetLastTrade (GetLastTradeRequest) returns (GetLastTradeResponse) {}
+  rpc GetAggregates (GetAggregatesRequest) returns (GetAggregatesResponse) {}
 }
 
 message GetLastTradeRequest {
@@ -17,4 +18,27 @@ message GetLastTradeResponse {
   double size = 2;
   int64 timestamp = 3;
   string exchange = 4;
+}
+
+message GetAggregatesRequest {
+  string ticker = 1;
+  int32 multiplier = 2;
+  string timespan = 3;
+  string from = 4;  // Format: YYYY-MM-DD
+  string to = 5;    // Format: YYYY-MM-DD
+  bool adjusted = 6;
+}
+
+message GetAggregatesResponse {
+  message AggregateBar {
+    double open = 1;
+    double high = 2;
+    double low = 3;
+    double close = 4;
+    double volume = 5;
+    double vwap = 6;
+    int64 timestamp = 7;
+    int64 transactions = 8;
+  }
+  repeated AggregateBar bars = 1;
 } 
