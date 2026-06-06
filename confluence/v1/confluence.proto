@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package jax.v1;
+
+option go_package = "github.com/ekinolik/jax/api/proto/confluence/v1;confluencev1";
+
+// ConfluenceService exposes real-time multi-signal confluence scores for day trading.
+service ConfluenceService {
+  // GetConfluence returns the latest snapshot for a ticker, activating the ticker if needed.
+  rpc GetConfluence(GetConfluenceRequest) returns (ConfluenceSnapshot);
+
+  // WatchConfluence streams snapshot updates when score or signal status changes.
+  rpc WatchConfluence(WatchConfluenceRequest) returns (stream ConfluenceSnapshot);
+}
+
+message GetConfluenceRequest {
+  string ticker = 1;
+}
+
+message WatchConfluenceRequest {
+  string ticker = 1;
+}
+
+message ConfluenceSnapshot {
+  string ticker = 1;
+  int64 timestamp = 2;
+  double confluence_score = 3;
+  string readiness = 4;
+  string oi_status = 5;
+  string market_status = 6;
+  repeated ConfluenceSignal signals = 7;
+  ConfluenceLevels levels = 8;
+  double daily_range_position = 9;
+  string distance_to_entry = 10;
+  int32 haptic_level = 11;
+  int32 background_level = 12;
+  double spot = 13;
+  int64 spot_timestamp = 14;
+  double rsi = 15;
+  string sector_etf = 16;
+  bool stacked_zone = 17;
+}
+
+message ConfluenceSignal {
+  string name = 1;
+  double weight = 2;
+  double axis_fill = 3;
+  string status = 4;
+  string icon = 5;
+  double score = 6;
+  string detail = 7;
+}
+
+message ConfluenceLevel {
+  double price = 1;
+  string source = 2;
+  double strength = 3;
+  int32 rank = 4;
+  string expiration = 5;
+}
+
+message ConfluenceLevels {
+  double gamma_flip = 1;
+  repeated ConfluenceLevel support = 2;
+  repeated ConfluenceLevel resistance = 3;
+  double nearest_support = 4;
+  double nearest_resistance = 5;
+  bool has_nearest_support = 6;
+  bool has_nearest_resistance = 7;
+}
