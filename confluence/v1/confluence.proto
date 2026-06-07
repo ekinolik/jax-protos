@@ -9,6 +9,9 @@ service ConfluenceService {
   // GetConfluence returns the latest snapshot for a ticker, activating the ticker if needed.
   rpc GetConfluence(GetConfluenceRequest) returns (ConfluenceSnapshot);
 
+  // GetConfluenceSummary returns a human-readable summary projected from the latest snapshot.
+  rpc GetConfluenceSummary(GetConfluenceRequest) returns (ConfluenceSummary);
+
   // WatchConfluence streams snapshot updates when score or signal status changes.
   rpc WatchConfluence(WatchConfluenceRequest) returns (stream ConfluenceSnapshot);
 }
@@ -39,6 +42,52 @@ message ConfluenceSnapshot {
   double rsi = 15;
   string sector_etf = 16;
   bool stacked_zone = 17;
+  // Unix seconds for the latest spot/greeks/OI input used in this snapshot (may be stale when market is closed).
+  int64 data_as_of = 18;
+
+  // v2 buy signals (preferred); signals field kept for backward compat
+  repeated ConfluenceSignal buy_signals = 19;
+  repeated ConfluenceSignal sell_signals = 20;
+
+  // Sell path (long exits only)
+  double sell_score = 21;
+  string sell_readiness = 22;
+  string exit_action = 23;
+  string distance_to_exit = 24;
+
+  // RSI daily + ADR
+  double rsi_daily = 25;
+  double adr_pct = 26;
+  double adr_30d_pct = 27;
+  double adr_5d_pct = 28;
+  double adr_spike_ratio = 29;
+  string adr_regime = 30;
+
+  // Trade geometry
+  double upside_pct = 31;
+  double downside_pct = 32;
+  double risk_reward = 33;
+  double upside_beyond_resistance_pct = 34;
+
+  // Gamma regime + squeeze
+  string gamma_regime = 35;
+  string gamma_regime_strength = 36;
+  double net_gex_at_spot = 37;
+  double call_wall = 38;
+  double put_wall = 39;
+  double session_vwap = 40;
+  double relative_volume = 41;
+  bool gamma_squeeze_active = 42;
+  bool short_squeeze_active = 43;
+  double gamma_environment_score = 44;
+  double gamma_directional_score = 45;
+  double short_squeeze_score = 46;
+  double short_pressure_score = 47;
+  double squeeze_trigger_score = 48;
+  double short_interest_pct = 49;
+  double short_volume_ratio = 50;
+  double days_to_cover = 51;
+  double float_shares = 52;
 }
 
 message ConfluenceSignal {
@@ -67,4 +116,70 @@ message ConfluenceLevels {
   double nearest_resistance = 5;
   bool has_nearest_support = 6;
   bool has_nearest_resistance = 7;
+}
+
+// ConfluenceSummary is a human-readable projection of ConfluenceSnapshot.
+message ConfluenceSummary {
+  string ticker = 1;
+  double spot = 2;
+  string as_of = 3;
+  string market = 4;
+
+  ConfluenceSummaryVerdict verdict = 5;
+  ConfluenceSummaryTradeSetup trade_setup = 6;
+  ConfluenceSummaryContext context = 7;
+  ConfluenceSummaryLevels levels = 8;
+  repeated string reasons = 9;
+  repeated string warnings = 10;
+  ConfluenceSummaryGates gates = 11;
+}
+
+message ConfluenceSummaryVerdict {
+  ConfluenceSummaryBuyVerdict buy = 1;
+  ConfluenceSummarySellVerdict sell = 2;
+}
+
+message ConfluenceSummaryBuyVerdict {
+  int32 score = 1;
+  string readiness = 2;
+  string label = 3;
+}
+
+message ConfluenceSummarySellVerdict {
+  int32 score = 1;
+  string readiness = 2;
+  string action = 3;
+  string label = 4;
+}
+
+message ConfluenceSummaryTradeSetup {
+  string archetype = 1;
+  string entry_timing = 2;
+  string exit_timing = 3;
+  double upside_pct = 4;
+  double downside_pct = 5;
+  double risk_reward = 6;
+}
+
+message ConfluenceSummaryContext {
+  string adr_regime = 1;
+  string gamma_regime = 2;
+  bool gamma_squeeze = 3;
+  bool short_squeeze = 4;
+  bool rsi_minute_unavailable = 5;
+  double rsi_minute = 6;
+  double rsi_daily = 7;
+}
+
+message ConfluenceSummaryLevels {
+  double support = 1;
+  double resistance = 2;
+  double call_wall = 3;
+  double put_wall = 4;
+}
+
+message ConfluenceSummaryGates {
+  bool upside_ok = 1;
+  bool adr_ok = 2;
+  bool blocked_from_high_conviction = 3;
 }

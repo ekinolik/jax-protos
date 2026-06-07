@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ConfluenceService_GetConfluence_FullMethodName   = "/jax.v1.ConfluenceService/GetConfluence"
-	ConfluenceService_WatchConfluence_FullMethodName = "/jax.v1.ConfluenceService/WatchConfluence"
+	ConfluenceService_GetConfluence_FullMethodName        = "/jax.v1.ConfluenceService/GetConfluence"
+	ConfluenceService_GetConfluenceSummary_FullMethodName = "/jax.v1.ConfluenceService/GetConfluenceSummary"
+	ConfluenceService_WatchConfluence_FullMethodName      = "/jax.v1.ConfluenceService/WatchConfluence"
 )
 
 // ConfluenceServiceClient is the client API for ConfluenceService service.
@@ -31,6 +32,8 @@ const (
 type ConfluenceServiceClient interface {
 	// GetConfluence returns the latest snapshot for a ticker, activating the ticker if needed.
 	GetConfluence(ctx context.Context, in *GetConfluenceRequest, opts ...grpc.CallOption) (*ConfluenceSnapshot, error)
+	// GetConfluenceSummary returns a human-readable summary projected from the latest snapshot.
+	GetConfluenceSummary(ctx context.Context, in *GetConfluenceRequest, opts ...grpc.CallOption) (*ConfluenceSummary, error)
 	// WatchConfluence streams snapshot updates when score or signal status changes.
 	WatchConfluence(ctx context.Context, in *WatchConfluenceRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ConfluenceSnapshot], error)
 }
@@ -47,6 +50,16 @@ func (c *confluenceServiceClient) GetConfluence(ctx context.Context, in *GetConf
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ConfluenceSnapshot)
 	err := c.cc.Invoke(ctx, ConfluenceService_GetConfluence_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *confluenceServiceClient) GetConfluenceSummary(ctx context.Context, in *GetConfluenceRequest, opts ...grpc.CallOption) (*ConfluenceSummary, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConfluenceSummary)
+	err := c.cc.Invoke(ctx, ConfluenceService_GetConfluenceSummary_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +93,8 @@ type ConfluenceService_WatchConfluenceClient = grpc.ServerStreamingClient[Conflu
 type ConfluenceServiceServer interface {
 	// GetConfluence returns the latest snapshot for a ticker, activating the ticker if needed.
 	GetConfluence(context.Context, *GetConfluenceRequest) (*ConfluenceSnapshot, error)
+	// GetConfluenceSummary returns a human-readable summary projected from the latest snapshot.
+	GetConfluenceSummary(context.Context, *GetConfluenceRequest) (*ConfluenceSummary, error)
 	// WatchConfluence streams snapshot updates when score or signal status changes.
 	WatchConfluence(*WatchConfluenceRequest, grpc.ServerStreamingServer[ConfluenceSnapshot]) error
 	mustEmbedUnimplementedConfluenceServiceServer()
@@ -94,6 +109,9 @@ type UnimplementedConfluenceServiceServer struct{}
 
 func (UnimplementedConfluenceServiceServer) GetConfluence(context.Context, *GetConfluenceRequest) (*ConfluenceSnapshot, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConfluence not implemented")
+}
+func (UnimplementedConfluenceServiceServer) GetConfluenceSummary(context.Context, *GetConfluenceRequest) (*ConfluenceSummary, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConfluenceSummary not implemented")
 }
 func (UnimplementedConfluenceServiceServer) WatchConfluence(*WatchConfluenceRequest, grpc.ServerStreamingServer[ConfluenceSnapshot]) error {
 	return status.Errorf(codes.Unimplemented, "method WatchConfluence not implemented")
@@ -137,6 +155,24 @@ func _ConfluenceService_GetConfluence_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfluenceService_GetConfluenceSummary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetConfluenceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfluenceServiceServer).GetConfluenceSummary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfluenceService_GetConfluenceSummary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfluenceServiceServer).GetConfluenceSummary(ctx, req.(*GetConfluenceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfluenceService_WatchConfluence_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(WatchConfluenceRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -158,6 +194,10 @@ var ConfluenceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetConfluence",
 			Handler:    _ConfluenceService_GetConfluence_Handler,
+		},
+		{
+			MethodName: "GetConfluenceSummary",
+			Handler:    _ConfluenceService_GetConfluenceSummary_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
