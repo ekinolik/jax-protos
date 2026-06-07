@@ -145,6 +145,12 @@ message TradePlan {
   double exit_instead_of_add_below = 4;
   SpotContext spot_context = 5;
   repeated string intraday_notes = 6;
+  double gex_dex_gap_pct = 7;
+  double trade_invalidation_price = 8;
+  double structure_invalidation_price = 9;
+  double primary_exit_price = 10;
+  PlanInvalidation invalidation = 11;
+  PlanPrimaryExit primary_exit = 12;
 }
 
 message EntryZone {
@@ -161,6 +167,25 @@ message StopLevel {
   string source = 3;
   string rule = 4;
   string action = 5;
+  string label = 6;
+  string meaning = 7;
+}
+
+message PlanInvalidation {
+  InvalidationPoint trade = 1;
+  InvalidationPoint structure = 2;
+}
+
+message InvalidationPoint {
+  double price = 1;
+  string label = 2;
+  string meaning = 3;
+}
+
+message PlanPrimaryExit {
+  double price = 1;
+  string label = 2;
+  bool emphasis = 3;
 }
 
 message AddLevel {

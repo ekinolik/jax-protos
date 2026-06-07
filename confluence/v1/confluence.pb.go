@@ -969,15 +969,21 @@ func (x *ConfluenceSummary) GetTradePlan() *TradePlan {
 }
 
 type TradePlan struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	EntryZone             *EntryZone             `protobuf:"bytes,1,opt,name=entry_zone,json=entryZone,proto3" json:"entry_zone,omitempty"`
-	Stops                 []*StopLevel           `protobuf:"bytes,2,rep,name=stops,proto3" json:"stops,omitempty"`
-	AverageDown           []*AddLevel            `protobuf:"bytes,3,rep,name=average_down,json=averageDown,proto3" json:"average_down,omitempty"`
-	ExitInsteadOfAddBelow float64                `protobuf:"fixed64,4,opt,name=exit_instead_of_add_below,json=exitInsteadOfAddBelow,proto3" json:"exit_instead_of_add_below,omitempty"`
-	SpotContext           *SpotContext           `protobuf:"bytes,5,opt,name=spot_context,json=spotContext,proto3" json:"spot_context,omitempty"`
-	IntradayNotes         []string               `protobuf:"bytes,6,rep,name=intraday_notes,json=intradayNotes,proto3" json:"intraday_notes,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	state                      protoimpl.MessageState `protogen:"open.v1"`
+	EntryZone                  *EntryZone             `protobuf:"bytes,1,opt,name=entry_zone,json=entryZone,proto3" json:"entry_zone,omitempty"`
+	Stops                      []*StopLevel           `protobuf:"bytes,2,rep,name=stops,proto3" json:"stops,omitempty"`
+	AverageDown                []*AddLevel            `protobuf:"bytes,3,rep,name=average_down,json=averageDown,proto3" json:"average_down,omitempty"`
+	ExitInsteadOfAddBelow      float64                `protobuf:"fixed64,4,opt,name=exit_instead_of_add_below,json=exitInsteadOfAddBelow,proto3" json:"exit_instead_of_add_below,omitempty"`
+	SpotContext                *SpotContext           `protobuf:"bytes,5,opt,name=spot_context,json=spotContext,proto3" json:"spot_context,omitempty"`
+	IntradayNotes              []string               `protobuf:"bytes,6,rep,name=intraday_notes,json=intradayNotes,proto3" json:"intraday_notes,omitempty"`
+	GexDexGapPct               float64                `protobuf:"fixed64,7,opt,name=gex_dex_gap_pct,json=gexDexGapPct,proto3" json:"gex_dex_gap_pct,omitempty"`
+	TradeInvalidationPrice     float64                `protobuf:"fixed64,8,opt,name=trade_invalidation_price,json=tradeInvalidationPrice,proto3" json:"trade_invalidation_price,omitempty"`
+	StructureInvalidationPrice float64                `protobuf:"fixed64,9,opt,name=structure_invalidation_price,json=structureInvalidationPrice,proto3" json:"structure_invalidation_price,omitempty"`
+	PrimaryExitPrice           float64                `protobuf:"fixed64,10,opt,name=primary_exit_price,json=primaryExitPrice,proto3" json:"primary_exit_price,omitempty"`
+	Invalidation               *PlanInvalidation      `protobuf:"bytes,11,opt,name=invalidation,proto3" json:"invalidation,omitempty"`
+	PrimaryExit                *PlanPrimaryExit       `protobuf:"bytes,12,opt,name=primary_exit,json=primaryExit,proto3" json:"primary_exit,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *TradePlan) Reset() {
@@ -1048,6 +1054,48 @@ func (x *TradePlan) GetSpotContext() *SpotContext {
 func (x *TradePlan) GetIntradayNotes() []string {
 	if x != nil {
 		return x.IntradayNotes
+	}
+	return nil
+}
+
+func (x *TradePlan) GetGexDexGapPct() float64 {
+	if x != nil {
+		return x.GexDexGapPct
+	}
+	return 0
+}
+
+func (x *TradePlan) GetTradeInvalidationPrice() float64 {
+	if x != nil {
+		return x.TradeInvalidationPrice
+	}
+	return 0
+}
+
+func (x *TradePlan) GetStructureInvalidationPrice() float64 {
+	if x != nil {
+		return x.StructureInvalidationPrice
+	}
+	return 0
+}
+
+func (x *TradePlan) GetPrimaryExitPrice() float64 {
+	if x != nil {
+		return x.PrimaryExitPrice
+	}
+	return 0
+}
+
+func (x *TradePlan) GetInvalidation() *PlanInvalidation {
+	if x != nil {
+		return x.Invalidation
+	}
+	return nil
+}
+
+func (x *TradePlan) GetPrimaryExit() *PlanPrimaryExit {
+	if x != nil {
+		return x.PrimaryExit
 	}
 	return nil
 }
@@ -1135,6 +1183,8 @@ type StopLevel struct {
 	Source        string                 `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
 	Rule          string                 `protobuf:"bytes,4,opt,name=rule,proto3" json:"rule,omitempty"`
 	Action        string                 `protobuf:"bytes,5,opt,name=action,proto3" json:"action,omitempty"`
+	Label         string                 `protobuf:"bytes,6,opt,name=label,proto3" json:"label,omitempty"`
+	Meaning       string                 `protobuf:"bytes,7,opt,name=meaning,proto3" json:"meaning,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1204,6 +1254,192 @@ func (x *StopLevel) GetAction() string {
 	return ""
 }
 
+func (x *StopLevel) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *StopLevel) GetMeaning() string {
+	if x != nil {
+		return x.Meaning
+	}
+	return ""
+}
+
+type PlanInvalidation struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Trade         *InvalidationPoint     `protobuf:"bytes,1,opt,name=trade,proto3" json:"trade,omitempty"`
+	Structure     *InvalidationPoint     `protobuf:"bytes,2,opt,name=structure,proto3" json:"structure,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlanInvalidation) Reset() {
+	*x = PlanInvalidation{}
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlanInvalidation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlanInvalidation) ProtoMessage() {}
+
+func (x *PlanInvalidation) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlanInvalidation.ProtoReflect.Descriptor instead.
+func (*PlanInvalidation) Descriptor() ([]byte, []int) {
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PlanInvalidation) GetTrade() *InvalidationPoint {
+	if x != nil {
+		return x.Trade
+	}
+	return nil
+}
+
+func (x *PlanInvalidation) GetStructure() *InvalidationPoint {
+	if x != nil {
+		return x.Structure
+	}
+	return nil
+}
+
+type InvalidationPoint struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Price         float64                `protobuf:"fixed64,1,opt,name=price,proto3" json:"price,omitempty"`
+	Label         string                 `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	Meaning       string                 `protobuf:"bytes,3,opt,name=meaning,proto3" json:"meaning,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InvalidationPoint) Reset() {
+	*x = InvalidationPoint{}
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InvalidationPoint) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InvalidationPoint) ProtoMessage() {}
+
+func (x *InvalidationPoint) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InvalidationPoint.ProtoReflect.Descriptor instead.
+func (*InvalidationPoint) Descriptor() ([]byte, []int) {
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *InvalidationPoint) GetPrice() float64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *InvalidationPoint) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *InvalidationPoint) GetMeaning() string {
+	if x != nil {
+		return x.Meaning
+	}
+	return ""
+}
+
+type PlanPrimaryExit struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Price         float64                `protobuf:"fixed64,1,opt,name=price,proto3" json:"price,omitempty"`
+	Label         string                 `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	Emphasis      bool                   `protobuf:"varint,3,opt,name=emphasis,proto3" json:"emphasis,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlanPrimaryExit) Reset() {
+	*x = PlanPrimaryExit{}
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlanPrimaryExit) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlanPrimaryExit) ProtoMessage() {}
+
+func (x *PlanPrimaryExit) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlanPrimaryExit.ProtoReflect.Descriptor instead.
+func (*PlanPrimaryExit) Descriptor() ([]byte, []int) {
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *PlanPrimaryExit) GetPrice() float64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *PlanPrimaryExit) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *PlanPrimaryExit) GetEmphasis() bool {
+	if x != nil {
+		return x.Emphasis
+	}
+	return false
+}
+
 type AddLevel struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Tier          string                 `protobuf:"bytes,1,opt,name=tier,proto3" json:"tier,omitempty"`
@@ -1217,7 +1453,7 @@ type AddLevel struct {
 
 func (x *AddLevel) Reset() {
 	*x = AddLevel{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[10]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1229,7 +1465,7 @@ func (x *AddLevel) String() string {
 func (*AddLevel) ProtoMessage() {}
 
 func (x *AddLevel) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[10]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1242,7 +1478,7 @@ func (x *AddLevel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddLevel.ProtoReflect.Descriptor instead.
 func (*AddLevel) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{10}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *AddLevel) GetTier() string {
@@ -1292,7 +1528,7 @@ type SpotContext struct {
 
 func (x *SpotContext) Reset() {
 	*x = SpotContext{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[11]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1304,7 +1540,7 @@ func (x *SpotContext) String() string {
 func (*SpotContext) ProtoMessage() {}
 
 func (x *SpotContext) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[11]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1317,7 +1553,7 @@ func (x *SpotContext) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SpotContext.ProtoReflect.Descriptor instead.
 func (*SpotContext) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{11}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SpotContext) GetVsEntryZone() string {
@@ -1358,7 +1594,7 @@ type ConfluenceSummaryVerdict struct {
 
 func (x *ConfluenceSummaryVerdict) Reset() {
 	*x = ConfluenceSummaryVerdict{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[12]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1370,7 +1606,7 @@ func (x *ConfluenceSummaryVerdict) String() string {
 func (*ConfluenceSummaryVerdict) ProtoMessage() {}
 
 func (x *ConfluenceSummaryVerdict) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[12]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1383,7 +1619,7 @@ func (x *ConfluenceSummaryVerdict) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryVerdict.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryVerdict) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{12}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ConfluenceSummaryVerdict) GetBuy() *ConfluenceSummaryBuyVerdict {
@@ -1411,7 +1647,7 @@ type ConfluenceSummaryBuyVerdict struct {
 
 func (x *ConfluenceSummaryBuyVerdict) Reset() {
 	*x = ConfluenceSummaryBuyVerdict{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[13]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1423,7 +1659,7 @@ func (x *ConfluenceSummaryBuyVerdict) String() string {
 func (*ConfluenceSummaryBuyVerdict) ProtoMessage() {}
 
 func (x *ConfluenceSummaryBuyVerdict) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[13]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1436,7 +1672,7 @@ func (x *ConfluenceSummaryBuyVerdict) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryBuyVerdict.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryBuyVerdict) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{13}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *ConfluenceSummaryBuyVerdict) GetScore() int32 {
@@ -1472,7 +1708,7 @@ type ConfluenceSummarySellVerdict struct {
 
 func (x *ConfluenceSummarySellVerdict) Reset() {
 	*x = ConfluenceSummarySellVerdict{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[14]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1484,7 +1720,7 @@ func (x *ConfluenceSummarySellVerdict) String() string {
 func (*ConfluenceSummarySellVerdict) ProtoMessage() {}
 
 func (x *ConfluenceSummarySellVerdict) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[14]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1497,7 +1733,7 @@ func (x *ConfluenceSummarySellVerdict) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummarySellVerdict.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummarySellVerdict) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{14}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ConfluenceSummarySellVerdict) GetScore() int32 {
@@ -1542,7 +1778,7 @@ type ConfluenceSummaryTradeSetup struct {
 
 func (x *ConfluenceSummaryTradeSetup) Reset() {
 	*x = ConfluenceSummaryTradeSetup{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[15]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1554,7 +1790,7 @@ func (x *ConfluenceSummaryTradeSetup) String() string {
 func (*ConfluenceSummaryTradeSetup) ProtoMessage() {}
 
 func (x *ConfluenceSummaryTradeSetup) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[15]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1567,7 +1803,7 @@ func (x *ConfluenceSummaryTradeSetup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryTradeSetup.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryTradeSetup) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{15}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ConfluenceSummaryTradeSetup) GetArchetype() string {
@@ -1627,7 +1863,7 @@ type ConfluenceSummaryContext struct {
 
 func (x *ConfluenceSummaryContext) Reset() {
 	*x = ConfluenceSummaryContext{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[16]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1639,7 +1875,7 @@ func (x *ConfluenceSummaryContext) String() string {
 func (*ConfluenceSummaryContext) ProtoMessage() {}
 
 func (x *ConfluenceSummaryContext) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[16]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1652,7 +1888,7 @@ func (x *ConfluenceSummaryContext) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryContext.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryContext) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{16}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ConfluenceSummaryContext) GetAdrRegime() string {
@@ -1716,7 +1952,7 @@ type ConfluenceSummaryLevels struct {
 
 func (x *ConfluenceSummaryLevels) Reset() {
 	*x = ConfluenceSummaryLevels{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[17]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1728,7 +1964,7 @@ func (x *ConfluenceSummaryLevels) String() string {
 func (*ConfluenceSummaryLevels) ProtoMessage() {}
 
 func (x *ConfluenceSummaryLevels) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[17]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1741,7 +1977,7 @@ func (x *ConfluenceSummaryLevels) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryLevels.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryLevels) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{17}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ConfluenceSummaryLevels) GetSupport() float64 {
@@ -1783,7 +2019,7 @@ type ConfluenceSummaryGates struct {
 
 func (x *ConfluenceSummaryGates) Reset() {
 	*x = ConfluenceSummaryGates{}
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[18]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1795,7 +2031,7 @@ func (x *ConfluenceSummaryGates) String() string {
 func (*ConfluenceSummaryGates) ProtoMessage() {}
 
 func (x *ConfluenceSummaryGates) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[18]
+	mi := &file_api_proto_confluence_v1_confluence_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1808,7 +2044,7 @@ func (x *ConfluenceSummaryGates) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfluenceSummaryGates.ProtoReflect.Descriptor instead.
 func (*ConfluenceSummaryGates) Descriptor() ([]byte, []int) {
-	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{18}
+	return file_api_proto_confluence_v1_confluence_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ConfluenceSummaryGates) GetUpsideOk() bool {
@@ -2051,7 +2287,7 @@ var file_api_proto_confluence_v1_confluence_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x70, 0x6c, 0x61, 0x6e, 0x18, 0x0c, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6a, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x72, 0x61, 0x64,
 	0x65, 0x50, 0x6c, 0x61, 0x6e, 0x52, 0x09, 0x74, 0x72, 0x61, 0x64, 0x65, 0x50, 0x6c, 0x61, 0x6e,
-	0x22, 0xb4, 0x02, 0x0a, 0x09, 0x54, 0x72, 0x61, 0x64, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x12, 0x30,
+	0x22, 0xff, 0x04, 0x0a, 0x09, 0x54, 0x72, 0x61, 0x64, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x12, 0x30,
 	0x0a, 0x0a, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x5f, 0x7a, 0x6f, 0x6e, 0x65, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6a, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e, 0x74, 0x72,
 	0x79, 0x5a, 0x6f, 0x6e, 0x65, 0x52, 0x09, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x5a, 0x6f, 0x6e, 0x65,
@@ -2070,24 +2306,67 @@ var file_api_proto_confluence_v1_confluence_proto_rawDesc = []byte{
 	0x65, 0x78, 0x74, 0x52, 0x0b, 0x73, 0x70, 0x6f, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74,
 	0x12, 0x25, 0x0a, 0x0e, 0x69, 0x6e, 0x74, 0x72, 0x61, 0x64, 0x61, 0x79, 0x5f, 0x6e, 0x6f, 0x74,
 	0x65, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0d, 0x69, 0x6e, 0x74, 0x72, 0x61, 0x64,
-	0x61, 0x79, 0x4e, 0x6f, 0x74, 0x65, 0x73, 0x22, 0x9a, 0x01, 0x0a, 0x09, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x5a, 0x6f, 0x6e, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x75,
-	0x72, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x69, 0x6d, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x69, 0x6d, 0x69, 0x6e, 0x67, 0x12, 0x33, 0x0a, 0x16, 0x64,
-	0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x73, 0x70, 0x6f,
-	0x74, 0x5f, 0x70, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x01, 0x52, 0x13, 0x64, 0x69, 0x73,
-	0x74, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x53, 0x70, 0x6f, 0x74, 0x50, 0x63, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x6f, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x6e, 0x6f, 0x74, 0x65, 0x22, 0x79, 0x0a, 0x09, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x65, 0x76, 0x65,
-	0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x74, 0x69, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x75,
-	0x72, 0x63, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x75, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x72, 0x75, 0x6c, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22,
+	0x61, 0x79, 0x4e, 0x6f, 0x74, 0x65, 0x73, 0x12, 0x25, 0x0a, 0x0f, 0x67, 0x65, 0x78, 0x5f, 0x64,
+	0x65, 0x78, 0x5f, 0x67, 0x61, 0x70, 0x5f, 0x70, 0x63, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x0c, 0x67, 0x65, 0x78, 0x44, 0x65, 0x78, 0x47, 0x61, 0x70, 0x50, 0x63, 0x74, 0x12, 0x38,
+	0x0a, 0x18, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x16, 0x74, 0x72, 0x61, 0x64, 0x65, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x40, 0x0a, 0x1c, 0x73, 0x74, 0x72, 0x75,
+	0x63, 0x74, 0x75, 0x72, 0x65, 0x5f, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x01, 0x52, 0x1a,
+	0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x70, 0x72,
+	0x69, 0x6d, 0x61, 0x72, 0x79, 0x5f, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x18, 0x0a, 0x20, 0x01, 0x28, 0x01, 0x52, 0x10, 0x70, 0x72, 0x69, 0x6d, 0x61, 0x72, 0x79, 0x45,
+	0x78, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3c, 0x0a, 0x0c, 0x69, 0x6e, 0x76, 0x61,
+	0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18,
+	0x2e, 0x6a, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6c, 0x61, 0x6e, 0x49, 0x6e, 0x76, 0x61,
+	0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69,
+	0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3a, 0x0a, 0x0c, 0x70, 0x72, 0x69, 0x6d, 0x61, 0x72,
+	0x79, 0x5f, 0x65, 0x78, 0x69, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6a,
+	0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6c, 0x61, 0x6e, 0x50, 0x72, 0x69, 0x6d, 0x61, 0x72,
+	0x79, 0x45, 0x78, 0x69, 0x74, 0x52, 0x0b, 0x70, 0x72, 0x69, 0x6d, 0x61, 0x72, 0x79, 0x45, 0x78,
+	0x69, 0x74, 0x22, 0x9a, 0x01, 0x0a, 0x09, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x5a, 0x6f, 0x6e, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52,
+	0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x74, 0x69, 0x6d, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x74, 0x69, 0x6d, 0x69, 0x6e, 0x67, 0x12, 0x33, 0x0a, 0x16, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e,
+	0x63, 0x65, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x73, 0x70, 0x6f, 0x74, 0x5f, 0x70, 0x63, 0x74,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x01, 0x52, 0x13, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65,
+	0x46, 0x72, 0x6f, 0x6d, 0x53, 0x70, 0x6f, 0x74, 0x50, 0x63, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e,
+	0x6f, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x6f, 0x74, 0x65, 0x22,
+	0xa9, 0x01, 0x0a, 0x09, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x12, 0x0a,
+	0x04, 0x74, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x69, 0x65,
+	0x72, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12,
+	0x12, 0x0a, 0x04, 0x72, 0x75, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72,
+	0x75, 0x6c, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x6c,
+	0x61, 0x62, 0x65, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65,
+	0x6c, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x61, 0x6e, 0x69, 0x6e, 0x67, 0x18, 0x07, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x61, 0x6e, 0x69, 0x6e, 0x67, 0x22, 0x7c, 0x0a, 0x10, 0x50,
+	0x6c, 0x61, 0x6e, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x2f, 0x0a, 0x05, 0x74, 0x72, 0x61, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x6a, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x05, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x12, 0x37, 0x0a, 0x09, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6a, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x6e, 0x76,
+	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x09,
+	0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x22, 0x59, 0x0a, 0x11, 0x49, 0x6e, 0x76,
+	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x14,
+	0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x70,
+	0x72, 0x69, 0x63, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
+	0x61, 0x6e, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x61,
+	0x6e, 0x69, 0x6e, 0x67, 0x22, 0x59, 0x0a, 0x0f, 0x50, 0x6c, 0x61, 0x6e, 0x50, 0x72, 0x69, 0x6d,
+	0x61, 0x72, 0x79, 0x45, 0x78, 0x69, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61,
+	0x62, 0x65, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x65, 0x6d, 0x70, 0x68, 0x61, 0x73, 0x69, 0x73, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x65, 0x6d, 0x70, 0x68, 0x61, 0x73, 0x69, 0x73, 0x22,
 	0x8a, 0x01, 0x0a, 0x08, 0x41, 0x64, 0x64, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x12, 0x0a, 0x04,
 	0x74, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x69, 0x65, 0x72,
 	0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52,
@@ -2215,7 +2494,7 @@ func file_api_proto_confluence_v1_confluence_proto_rawDescGZIP() []byte {
 	return file_api_proto_confluence_v1_confluence_proto_rawDescData
 }
 
-var file_api_proto_confluence_v1_confluence_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_api_proto_confluence_v1_confluence_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_api_proto_confluence_v1_confluence_proto_goTypes = []any{
 	(*GetConfluenceRequest)(nil),         // 0: jax.v1.GetConfluenceRequest
 	(*WatchConfluenceRequest)(nil),       // 1: jax.v1.WatchConfluenceRequest
@@ -2227,15 +2506,18 @@ var file_api_proto_confluence_v1_confluence_proto_goTypes = []any{
 	(*TradePlan)(nil),                    // 7: jax.v1.TradePlan
 	(*EntryZone)(nil),                    // 8: jax.v1.EntryZone
 	(*StopLevel)(nil),                    // 9: jax.v1.StopLevel
-	(*AddLevel)(nil),                     // 10: jax.v1.AddLevel
-	(*SpotContext)(nil),                  // 11: jax.v1.SpotContext
-	(*ConfluenceSummaryVerdict)(nil),     // 12: jax.v1.ConfluenceSummaryVerdict
-	(*ConfluenceSummaryBuyVerdict)(nil),  // 13: jax.v1.ConfluenceSummaryBuyVerdict
-	(*ConfluenceSummarySellVerdict)(nil), // 14: jax.v1.ConfluenceSummarySellVerdict
-	(*ConfluenceSummaryTradeSetup)(nil),  // 15: jax.v1.ConfluenceSummaryTradeSetup
-	(*ConfluenceSummaryContext)(nil),     // 16: jax.v1.ConfluenceSummaryContext
-	(*ConfluenceSummaryLevels)(nil),      // 17: jax.v1.ConfluenceSummaryLevels
-	(*ConfluenceSummaryGates)(nil),       // 18: jax.v1.ConfluenceSummaryGates
+	(*PlanInvalidation)(nil),             // 10: jax.v1.PlanInvalidation
+	(*InvalidationPoint)(nil),            // 11: jax.v1.InvalidationPoint
+	(*PlanPrimaryExit)(nil),              // 12: jax.v1.PlanPrimaryExit
+	(*AddLevel)(nil),                     // 13: jax.v1.AddLevel
+	(*SpotContext)(nil),                  // 14: jax.v1.SpotContext
+	(*ConfluenceSummaryVerdict)(nil),     // 15: jax.v1.ConfluenceSummaryVerdict
+	(*ConfluenceSummaryBuyVerdict)(nil),  // 16: jax.v1.ConfluenceSummaryBuyVerdict
+	(*ConfluenceSummarySellVerdict)(nil), // 17: jax.v1.ConfluenceSummarySellVerdict
+	(*ConfluenceSummaryTradeSetup)(nil),  // 18: jax.v1.ConfluenceSummaryTradeSetup
+	(*ConfluenceSummaryContext)(nil),     // 19: jax.v1.ConfluenceSummaryContext
+	(*ConfluenceSummaryLevels)(nil),      // 20: jax.v1.ConfluenceSummaryLevels
+	(*ConfluenceSummaryGates)(nil),       // 21: jax.v1.ConfluenceSummaryGates
 }
 var file_api_proto_confluence_v1_confluence_proto_depIdxs = []int32{
 	3,  // 0: jax.v1.ConfluenceSnapshot.signals:type_name -> jax.v1.ConfluenceSignal
@@ -2245,29 +2527,33 @@ var file_api_proto_confluence_v1_confluence_proto_depIdxs = []int32{
 	7,  // 4: jax.v1.ConfluenceSnapshot.trade_plan:type_name -> jax.v1.TradePlan
 	4,  // 5: jax.v1.ConfluenceLevels.support:type_name -> jax.v1.ConfluenceLevel
 	4,  // 6: jax.v1.ConfluenceLevels.resistance:type_name -> jax.v1.ConfluenceLevel
-	12, // 7: jax.v1.ConfluenceSummary.verdict:type_name -> jax.v1.ConfluenceSummaryVerdict
-	15, // 8: jax.v1.ConfluenceSummary.trade_setup:type_name -> jax.v1.ConfluenceSummaryTradeSetup
-	16, // 9: jax.v1.ConfluenceSummary.context:type_name -> jax.v1.ConfluenceSummaryContext
-	17, // 10: jax.v1.ConfluenceSummary.levels:type_name -> jax.v1.ConfluenceSummaryLevels
-	18, // 11: jax.v1.ConfluenceSummary.gates:type_name -> jax.v1.ConfluenceSummaryGates
+	15, // 7: jax.v1.ConfluenceSummary.verdict:type_name -> jax.v1.ConfluenceSummaryVerdict
+	18, // 8: jax.v1.ConfluenceSummary.trade_setup:type_name -> jax.v1.ConfluenceSummaryTradeSetup
+	19, // 9: jax.v1.ConfluenceSummary.context:type_name -> jax.v1.ConfluenceSummaryContext
+	20, // 10: jax.v1.ConfluenceSummary.levels:type_name -> jax.v1.ConfluenceSummaryLevels
+	21, // 11: jax.v1.ConfluenceSummary.gates:type_name -> jax.v1.ConfluenceSummaryGates
 	7,  // 12: jax.v1.ConfluenceSummary.trade_plan:type_name -> jax.v1.TradePlan
 	8,  // 13: jax.v1.TradePlan.entry_zone:type_name -> jax.v1.EntryZone
 	9,  // 14: jax.v1.TradePlan.stops:type_name -> jax.v1.StopLevel
-	10, // 15: jax.v1.TradePlan.average_down:type_name -> jax.v1.AddLevel
-	11, // 16: jax.v1.TradePlan.spot_context:type_name -> jax.v1.SpotContext
-	13, // 17: jax.v1.ConfluenceSummaryVerdict.buy:type_name -> jax.v1.ConfluenceSummaryBuyVerdict
-	14, // 18: jax.v1.ConfluenceSummaryVerdict.sell:type_name -> jax.v1.ConfluenceSummarySellVerdict
-	0,  // 19: jax.v1.ConfluenceService.GetConfluence:input_type -> jax.v1.GetConfluenceRequest
-	0,  // 20: jax.v1.ConfluenceService.GetConfluenceSummary:input_type -> jax.v1.GetConfluenceRequest
-	1,  // 21: jax.v1.ConfluenceService.WatchConfluence:input_type -> jax.v1.WatchConfluenceRequest
-	2,  // 22: jax.v1.ConfluenceService.GetConfluence:output_type -> jax.v1.ConfluenceSnapshot
-	6,  // 23: jax.v1.ConfluenceService.GetConfluenceSummary:output_type -> jax.v1.ConfluenceSummary
-	2,  // 24: jax.v1.ConfluenceService.WatchConfluence:output_type -> jax.v1.ConfluenceSnapshot
-	22, // [22:25] is the sub-list for method output_type
-	19, // [19:22] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	13, // 15: jax.v1.TradePlan.average_down:type_name -> jax.v1.AddLevel
+	14, // 16: jax.v1.TradePlan.spot_context:type_name -> jax.v1.SpotContext
+	10, // 17: jax.v1.TradePlan.invalidation:type_name -> jax.v1.PlanInvalidation
+	12, // 18: jax.v1.TradePlan.primary_exit:type_name -> jax.v1.PlanPrimaryExit
+	11, // 19: jax.v1.PlanInvalidation.trade:type_name -> jax.v1.InvalidationPoint
+	11, // 20: jax.v1.PlanInvalidation.structure:type_name -> jax.v1.InvalidationPoint
+	16, // 21: jax.v1.ConfluenceSummaryVerdict.buy:type_name -> jax.v1.ConfluenceSummaryBuyVerdict
+	17, // 22: jax.v1.ConfluenceSummaryVerdict.sell:type_name -> jax.v1.ConfluenceSummarySellVerdict
+	0,  // 23: jax.v1.ConfluenceService.GetConfluence:input_type -> jax.v1.GetConfluenceRequest
+	0,  // 24: jax.v1.ConfluenceService.GetConfluenceSummary:input_type -> jax.v1.GetConfluenceRequest
+	1,  // 25: jax.v1.ConfluenceService.WatchConfluence:input_type -> jax.v1.WatchConfluenceRequest
+	2,  // 26: jax.v1.ConfluenceService.GetConfluence:output_type -> jax.v1.ConfluenceSnapshot
+	6,  // 27: jax.v1.ConfluenceService.GetConfluenceSummary:output_type -> jax.v1.ConfluenceSummary
+	2,  // 28: jax.v1.ConfluenceService.WatchConfluence:output_type -> jax.v1.ConfluenceSnapshot
+	26, // [26:29] is the sub-list for method output_type
+	23, // [23:26] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_confluence_v1_confluence_proto_init() }
@@ -2281,7 +2567,7 @@ func file_api_proto_confluence_v1_confluence_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_confluence_v1_confluence_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
