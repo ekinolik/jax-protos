@@ -88,6 +88,9 @@ message ConfluenceSnapshot {
   double short_volume_ratio = 50;
   double days_to_cover = 51;
   double float_shares = 52;
+
+  // Static entry playbook when buy readiness warrants (v2.1)
+  TradePlan trade_plan = 53;
 }
 
 message ConfluenceSignal {
@@ -132,6 +135,47 @@ message ConfluenceSummary {
   repeated string reasons = 9;
   repeated string warnings = 10;
   ConfluenceSummaryGates gates = 11;
+  TradePlan trade_plan = 12;
+}
+
+message TradePlan {
+  EntryZone entry_zone = 1;
+  repeated StopLevel stops = 2;
+  repeated AddLevel average_down = 3;
+  double exit_instead_of_add_below = 4;
+  SpotContext spot_context = 5;
+  repeated string intraday_notes = 6;
+}
+
+message EntryZone {
+  double price = 1;
+  string source = 2;
+  string timing = 3;
+  double distance_from_spot_pct = 4;
+  string note = 5;
+}
+
+message StopLevel {
+  string tier = 1;
+  double price = 2;
+  string source = 3;
+  string rule = 4;
+  string action = 5;
+}
+
+message AddLevel {
+  string tier = 1;
+  double price = 2;
+  string size_hint = 3;
+  string condition = 4;
+  string if_below = 5;
+}
+
+message SpotContext {
+  string vs_entry_zone = 1;
+  string vs_soft_stop = 2;
+  string vs_hard_stop = 3;
+  string guidance = 4;
 }
 
 message ConfluenceSummaryVerdict {
